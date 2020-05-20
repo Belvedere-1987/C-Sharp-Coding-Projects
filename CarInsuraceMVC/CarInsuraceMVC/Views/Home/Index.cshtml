@@ -1,0 +1,99 @@
+﻿@model CarInsuranceMVC.Models.QuoteApp
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row no-gutters m-3">
+    <div class="card col-sm-12 col-md-10 col-lg-6 mx-auto shadow">
+        <div class="card-header text-center">
+            <h5 class="m-4">Sign up for Car Insurance by filling out the form below</h5>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("SignUp", "Home", FormMethod.Post))
+            {
+                <div class="row no-gutters">
+                    <div class=" form-group col-md-12">
+                        First Name: @Html.TextBoxFor(model => model.FirstName)
+                    </div>
+                    <div class=" form-group col-md-12">
+                        Last Name: @Html.TextBoxFor(model => model.LastName)
+                    </div>
+                    <div class=" form-group col-md-12">
+                        Email Address: @Html.TextBoxFor(model => model.EmailAddress)
+                    </div>
+                    <div class=" form-group col-md-12">
+                        Date of Birth: @Html.TextBoxFor(model => model.DOB, new { type = "date" })
+                    </div>
+                    <div class=" form-group col-md-12">
+                        Car Make: @Html.TextBoxFor(model => model.CarMake)
+                    </div>
+                    <div class=" form-group col-md-12">
+                        Car Model: @Html.TextBoxFor(model => model.CarModel)
+                    </div>
+                    <div class=" form-group col-md-12">
+                        Car Year: @Html.TextBoxFor(model => model.CarYear, new { type = "number" })
+                    </div>
+                    <div class=" form-group col-md-12">
+                        <h5 class="m-4">Have you ever been convicted of a DUI?</h5>
+                        No
+                        @Html.RadioButtonFor(model => model.Dui, "no")
+                        Yes
+                        @Html.RadioButtonFor(model => model.Dui, "yes")
+                    </div>
+                    <div class=" form-group col-md-12">
+                        <h5 class="m-4">How many speeding tickets do you have?</h5>
+                        @Html.TextBoxFor(model => model.Tickets, new { type = "number", placeholder = "0"})
+                    </div>
+
+
+                    <div class=" form-group col-md-12">
+                        <h5 class="m-4">Would you like full coverage or basic liability insurance?</h5>
+                        Full
+                        @Html.RadioButtonFor(model => model.Coverage, "full")
+                        Liablity
+                        @Html.RadioButtonFor(model => model.Coverage, "liability")
+
+
+                    </div>
+
+                    <button type="submit" class="btn btn-block btn-primary">Submit</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@*<div class=" form-group col-md-12">
+        <label for="firstName">First Name:</label>
+        <input name="FirstName" id="FirstName" type="text" label="First Name" class="form-control" placeholder="First Name" />
+    </div>
+    <div class=" form-group col-md-12">
+        <label for="lastName">Last Name:</label>
+        <input name="LastName" id="LastName" text class="form-control" placeholder="Last Name" />
+    </div>
+    <div class=" form-group col-md-12">
+        <label for="emailAddress">Email Address:</label>
+        <input name="EmailAddress" id="EmailAdress" type="email" class="form-control" placeholder="Email Address" />
+    </div>
+    <div class=" form-group col-md-12">
+        <label for="dob">Date of Birth:</label>
+        <input name="DOB" id="DOB" type="date" class="form-control" placeholder="mm/dd/yyyy" />
+    </div>
+    <hr />
+    <div class=" form-group col-md-12">
+        <label for="carYear">Car Year:</label>
+        <input name="CarYear" id="CarYear" type="number" min="1910" max="2050" class="form-control" placeholder="2020" />
+    </div>
+    <div class=" form-group col-md-12">
+        <label for="carMake">Car Make:</label>
+        <input name="CarMake" id="CarMake" type="text" class="form-control" placeholder="Ford" />
+    </div>
+    <div class=" form-group col-md-12">
+        <label for="carModel">Car Model:</label>
+        <input name="CarModel" id="CarModel" type="text" class="form-control" placeholder="F-150" />
+    </div>
+    <div class=" form-group col-md-12">
+                            <label for="Tickets">How many speeding tickets do you have?:</label>
+                            <input name="Tickets" type="number" min="0" id="Tickets" class="form-control" placeholder="0" />
+                        </div>*@
