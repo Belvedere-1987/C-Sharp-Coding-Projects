@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Cart";
+}
+<h2> Your produce cart:</h2>
+<br>
+<br>
+<form action="" method="POST">
+    @*In the action field, I would have the url for the payment portal to send form too. since there is not payment portal, I'm leaving it blank'*@
+
+
+<table class="table-striped">
+
+        <thead>
+                <tr>
+                    <th scope="col"> Produce:</th>
+                    <th scope="col"> Cost per item:</th>
+                    <th scope="col">   </th>
+                </tr>
+            </thead>
+  
+            <tbody data-bind="foreach: produce">
+                <tr>
+                    <td> <select data-bind="options: $root.availableProduce, value:grocery, optionsText: 'prod'"></select></td>
+                    <td data-bind="text: grocery().price"></td>
+                    <td><a href="#" data-bind="click: $root.removeVegetable">Remove</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <button type="submit"> Purchase selected Produce</button>
+</form>
+
+<br/>
+<button data-bind="click: addVegetable">Add more Produce</button>
+
+<h3 data-bind="visible:prodTotal() > 0">
+    Total: $<span data-bind="text: prodTotal().toFixed(2)"></span>
+</h3>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/knockout-3.5.1.js"></script>
+<script src="~/ViewModel/produceViewModel.js"></script>
