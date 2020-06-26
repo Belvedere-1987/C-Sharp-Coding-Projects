@@ -1,0 +1,210 @@
+﻿///User List Story that I worked on displays understanding of how to use razor syntax, specifically how to implement class onto a link using the new { @class = ""} convention. 
+///This snippet also display how to create links using the Url.Action method. 
+
+<table class="table-styling">
+    <tr class="tr-styling">
+        <th class="th-styling">
+            @Html.Raw(DecideCaret(Html.DisplayNameFor(model => model.UserName).ToString()))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.UserName).ToString(), "UserList", "Admin", new { requestedSort = "UserName", currentSortOrder = ViewBag.SortOrder }, new { @class = "text-white" })
+        </th>
+        <th class="th-styling">
+            @Html.Raw(DecideCaret(Html.DisplayNameFor(model => model.FirstName).ToString()))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.FirstName).ToString(), "UserList", "Admin", new { requestedSort = "FirstName", currentSortOrder = ViewBag.SortOrder }, new { @class = "text-white" })
+        </th>
+        <th class="th-styling">
+            @Html.Raw(DecideCaret(Html.DisplayNameFor(model => model.LastName).ToString()))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LastName).ToString(), "UserList", "Admin", new { requestedSort = "LastName", currentSortOrder = ViewBag.SortOrder }, new { @class = "text-white" })
+        </th>
+        <th class="th-styling">
+            @Html.Raw(DecideCaret(Html.DisplayNameFor(model => model.Role).ToString()))
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Role).ToString(), "UserList", "Admin", new { requestedSort = "Role", currentSortOrder = ViewBag.SortOrder }, new { @class = "text-white" })
+        </th>
+        <th class="th-styling">
+            <div class="text-white">
+                Options
+            </div>
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr class="tr-styling">
+            <td class="td-styling">
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td class="td-styling">
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td class="td-styling">
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td class="td-styling">
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td class="text-center">
+                @if (item.Role == "Subscriber")
+                {
+
+                    <a href="@Url.Action("Details", "Subscriber", new { id = item.SubscriberPerson.SubscriberId, area = "Subscribers" }, null)">Details </a> @:|
+                    <a href="@Url.Action("Edit", "Subscriber", new { id = item.SubscriberPerson.SubscriberId, area="Subscribers"}, null)"> Edit </a>
+
+                }
+                @if (item.Role == "Member")
+                {
+
+                    @*@Html.ActionLink("Details", "Details", "CastMember", new { id = item.CastMemberUserID }, null) this was the way the link for CastMember Details was previously implemented*@
+
+                    <a href="@Url.Action("Details", "CastMembers", new { id = item.CastMemberUserID}, null)">Details </a>@:|
+                    <a href="@Url.Action("Edit", "CastMembers", new { id = item.CastMemberUserID}, null)"> Edit </a>
+
+
+                }
+            </td>
+        </tr>
+
+    }
+</table>
+
+
+
+///////// Seeding items into a datbase. Added 24 items to a database using linq, which also added them to a cshtml file that would show the image:
+
+
+Added them to a Seedproductions method that created an instance of each production:
+
+        private void SeedProductions()
+        {
+
+            var productions = new List<Production>
+    {
+    new Production{Title = "The American Pilot", Playwright = "David Greig", Description = "An American pilot has crash-landed in a distant country "+
+    "rent by civil war. Since the Americans fund the country's oppressive government and the pilot has landed in rural, rebel territory, " +
+    "he represents both a temptation and an opportunity." ,
+    OpeningDay = new DateTime(2011, 10, 01, 14, 00, 00), ClosingDay = new DateTime(2011, 11, 01, 19, 00, 00), ShowtimeEve = new DateTime(2011, 10, 01, 19, 00, 00),
+    ShowtimeMat = new DateTime(2011, 10, 01, 14, 00, 00), TicketLink = "ticketsforyou.com", Runtime = 90, Season = 15, IsCurrent = false},
+
+    X 24
+    }
+
+    productions.ForEach(Production => context.Productions.AddOrUpdate(d => d.Title, Production));
+    context.SaveChanges();
+
+    }
+
+    private void SeedProductionPhotos()
+
+    {
+    var converter = new ImageConverter();
+    // create images first
+    string imagesRoot = Path.Combine(AppDomain.CurrentDomain.BaseDirectory + @"\Content\Images");
+
+    Image image30 = Image.FromFile(Path.Combine(imagesRoot, @"americanpilot.jpg"));
+
+    var photos = new List<Photo>
+
+        new Photo
+        {
+        OriginalHeight = image30.Height,
+        OriginalWidth = image30.Width,
+        PhotoFile = (byte[])converter.ConvertTo(image30, typeof(byte[])),
+        Title = "The American Pilot"
+        },
+
+        photos.ForEach(Photo => context.Photo.AddOrUpdate(p => p.PhotoFile, Photo));
+        context.SaveChanges();
+
+        var productionphoto = new List<ProductionPhotos>
+            {
+            new ProductionPhotos
+            {
+            PhotoId = context.Photo.Where(photo => photo.Title == "The American Pilot").FirstOrDefault().PhotoId,
+            Title = "The American Pilot",
+            Description = "The American Pilot cover",
+            Production = context.Productions.Where(name => name.Title == "The American Pilot").FirstOrDefault()
+            },
+
+            };
+
+            productionphoto.ForEach(prodphoto => context.ProductionPhotos.AddOrUpdate(p => p.PhotoId, prodphoto));
+            context.SaveChanges();
+
+            var productions = context.Productions.ToList();
+            var productionPhotos = context.ProductionPhotos.ToList();
+            foreach (var production in productions)
+            {
+            production.DefaultPhoto = productionPhotos.Where(productionPhoto => productionPhoto.Production == production).FirstOrDefault();
+            }
+            context.SaveChanges();
+            }
+
+
+
+////Added links to a view for for two different views using the Url.Action method. Additionally utilized custom class to add css styling. 
+
+            <div class="container-lg mt-5" id="partDetailsBorder">
+
+                <h3 class="mt-1">Part</h3>
+
+                <dl class="dl-horizontal">
+
+                    <dt class="mt-4">
+                        @Html.DisplayNameFor(model => model.Production)
+                    </dt>
+
+                    <dd>
+                        <a href="@Url.Action("Details", "Productions", new { id = Model.Production.ProductionId})" id="part-details-link">@Html.DisplayFor(model => model.Production.Title)</a>
+
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Person)
+                    </dt>
+
+                    <dd>
+                        <a href="@Url.Action("Details", "CastMembers", new { id = Model.Person.CastMemberID})" id="part-details-link">@Html.DisplayFor(model => model.Person.Name)</a>
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Character)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Character)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Type)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Details)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Details)
+                    </dd>
+
+                </dl>
+                <p>
+                    @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.PartID }) @: |
+                    }
+
+                    @Html.ActionLink("Back to List", "Index")
+                </p>
+            </div>
+
+
+
+            css class:
+
+            #partDetailsBorder {
+            border: 2px solid;
+            border-color: var(--main-bg-color);
+            color: var(--light-color);
+            }
